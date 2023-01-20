@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head><title>funny radio lol</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link href="https://fonts.googleapis.com/css2?family=Didact+Gothic&amp;display=swap" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href=https://www.weezerpedia.com/w/images/b/bc/Rivers_Cuomo_-_Pink_era.jpg>
+        <style>
+            * {
+                font-family: 'Didact Gothic', monospace;
+                text-align: center;
+                font-size: 35px;
+                color: rgb(255, 255, 255);
+            }
+            btt {
+                font-family: 'Didact Gothic', monospace;
+                text-align: center;
+                font-size: 35px;
+                background-color: black;
+            }
+            
+        html, body {
+          width: 100%;
+          height:90%;
+        }
+        
+        body {
+            background-image: url('https://media.discordapp.net/attachments/1028552848843214868/1065832228476682321/background-blue.png?width=902&height=905');
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        html, body {
+          width: 100%;
+          height: 100%;
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        #submit {
+            border-radius: 25px;
+          border: 2px solid #73AD21;
+          padding: 5px;
+          width: 100px;
+          height: 30px;
+          text-align: center;
+          color:black;
+        }
+        #button {
+            border-radius: 25px;
+          border: 2px solid #ad2a21;
+          padding: 5px;
+          width: 250px;
+          height: 60px;
+          text-align: center;
+          background-color: black;
+          color: white;
+        }
+        #knob {
+  pointer-events: none;
+}
+        #audio {
+            border-radius: 25px;
+          border: 2px solid #3621ad;
+          padding: 5px;
+          width: 300px;
+          height: 50px;
+          background-color: black;
+          color: white;
+        }
+    
+        .key {
+            text-align:left;
+            color:black;
+        }
+        
+        </style></head>
+  <body>
+    <audio id="player">
+    </audio>
+    <div id="time">
+      <span id="currentTime"></span> / <span id="duration"></span>
+      <span id="currentSong"></span>
+    </div>
+    <br>
+    <button onclick="document.getElementById('player').play()" id="button">Play</button>
+    <button onclick="document.getElementById('player').pause()" id="button">Pause</button>
+    <button onclick="document.getElementById('player').volume+=0.1" id="button">Volume Up</button>
+    <button onclick="document.getElementById('player').volume-=0.1" id="button">Volume Down</button>
+    <button onclick="nextSong()" id="button">Skip</button>
+    <button onclick="prevSong()" id="button">Back</button><br><br>
+    <div id="knob-container" onmousedown="startTurn(event)" onmousemove="turnKnob(event)" onmouseup="endTurn()">
+      <img id="knob" width=150 src="https://media.discordapp.net/attachments/1028552848843214868/1065828822135619644/dial.png">
+    </div><br><br>
+        <button id="button"><a href=/> Home </a></button><br>
+    <script>
+          var knob = document.getElementById("knob"); 
+    var knobCenterX;
+    var knobCenterY;
+    var startAngle;
+    var currentAngle;
+    var isTurning = false;
+      var player = document.getElementById("player");
+      var currentTime = document.getElementById("currentTime");
+      var duration = document.getElementById("duration");
+      var currentSongTitle = document.getElementById("currentSong");
+      var currentSong = 0;
+      var songs = ["https://cdn.discordapp.com/attachments/1045724642054254704/1065831338986450975/Radio01.mp3", "https://cdn.discordapp.com/attachments/1045724642054254704/1065831339321983108/Radio02.mp3", "https://cdn.discordapp.com/attachments/1045724642054254704/1065831339636572241/Radio03.mp3", "https://cdn.discordapp.com/attachments/1045724642054254704/1065831339942752326/Radio04.mp3"];
+      var songTitles = ["Rocky Roads", "The Future Is Now", "Boss Fight", "Europe"];
+      player.src = songs[currentSong];
+      currentSongTitle.innerHTML = songTitles[currentSong];
+      player.addEventListener("timeupdate", function() {
+        currentTime.innerHTML = formatTime(player.currentTime);
+        duration.innerHTML = formatTime(player.duration);
+      });
+
+      function startTurn(event) {
+  if (event.type === "mousedown") {
+    knobCenterX = knob.offsetLeft + knob.clientWidth / 2;
+    knobCenterY = knob.offsetTop + knob.clientHeight / 2;
+    startAngle = Math.atan2(event.clientY - knobCenterY, event.clientX - knobCenterX);
+    isTurning = true;
+  }
+}
+
+function turnKnob(event) {
+  if (!isTurning || event.type !== "mousemove") {
+    return;
+  }
+
+  currentAngle = Math.atan2(event.clientY - knobCenterY, event.clientX - knobCenterX);
+  var angleDelta = currentAngle - startAngle;
+  var songIndex = Math.round((angleDelta / (2 * Math.PI)) * songs.length);
+  songIndex = (songIndex + songs.length) % songs.length;
+  if (songIndex != currentSong) {
+    currentSong = songIndex;
+    player.src = songs[currentSong];
+    currentSongTitle.innerHTML =songTitles[currentSong];
+    player.play();
+    knob.style.transform = "rotate(" + currentAngle + "rad)";
+  }
+}
+
+function endTurn() {
+  isTurning = false;
+}
+      
+      function formatTime(time) {
+        var minutes = Math.floor(time / 60);
+        var seconds = Math.floor(time % 60);
+        if (seconds < 10) {
+          seconds = "0" + seconds;
+        }
+        return minutes + ":" + seconds;
+      }
+      
+      function nextSong() {
+        currentSong = (currentSong + 1) % songs.length;
+        player.src = songs[currentSong];
+        currentSongTitle.innerHTML = songTitles[currentSong];
+        player.play();
+      }
+      
+      function prevSong() {
+        currentSong = (currentSong - 1 + songs.length) % songs.length;
+        player.src = songs[currentSong];
+        currentSongTitle.innerHTML =songTitles[currentSong];
+        player.play();
+      }
+    </script>
+  </body>
+</html>
